@@ -25,6 +25,12 @@ def connect():
         # use load() rather than loads() for JSON files
         record_list = json.load(json_data)
 
+        if type(record_list) == list:
+            first_record = record_list[0]
+            # get the column names from the first record
+            columns = list(first_record.keys())
+            print ("\ncolumn names:", columns)
+            
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
