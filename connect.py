@@ -30,7 +30,25 @@ def connect():
             # get the column names from the first record
             columns = list(first_record.keys())
             print ("\ncolumn names:", columns)
-            
+            table_name = "json_data"
+            sql_string = 'INSERT INTO {} '.format( table_name )
+            sql_string += "(" + ', '.join(columns) + ")\nVALUES "
+            # enumerate over the record
+            for i, record_dict in enumerate(record_list):
+
+                # iterate over the values of each record dict object
+                values = []
+                for col_names, val in record_dict.items():
+
+                    # Postgres strings must be enclosed with single quotes
+                    if type(val) == str:
+                        # escape apostrophies with two single quotations
+                        val = val.replace("'", "''")
+                        val = "'" + val + "'"
+
+                    values += [ str(val) ]
+
+
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
