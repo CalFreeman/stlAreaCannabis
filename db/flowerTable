@@ -1,0 +1,12 @@
+CREATE TABLE json_data (
+  id UUID PRIMARY KEY,
+  brand_col VARCHAR(500),
+  gram_col SMALLINT,
+  image_col VARCHAR(500),
+  name_col VARCHAR(500),
+  price_col SMALLINT,
+  qty_col SMALLINT,
+  status_col VARCHAR(500),
+  strain_col VARCHAR(500),
+  type_col VARCHAR(500)
+);
