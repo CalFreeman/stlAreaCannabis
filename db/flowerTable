@@ -1,7 +1,7 @@
 CREATE TABLE json_data (
   id UUID PRIMARY KEY,
   brand_col VARCHAR(500),
-  gram_col SMALLINT,
+  gram_col VARCHAR(500),
   image_col VARCHAR(500),
   name_col VARCHAR(500),
   price_col SMALLINT,
@@ -10,3 +10,12 @@ CREATE TABLE json_data (
   strain_col VARCHAR(500),
   type_col VARCHAR(500)
 );
+{"brand_col":"Cassville GP, LLC",
+"gram_col":"1/8oz",
+"image_col":"https://s3-us-west-2.amazonaws.com/dutchie-images/8510b899e6754ce7eb2a30c28a9af3a5",
+"name_col":"Terpocalypse | 3.5g",
+"price_col":40,
+"qty_col":25,
+"status_col":"Active",
+"strain_col":"Hybrid",
+"type_col":"Flower"}

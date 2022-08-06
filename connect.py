@@ -4,6 +4,7 @@ import json
 import sys
 from config import config
 from psycopg2 import connect, Error
+import uuid
 
 def dataFetch():
     # use Python's open() function to load the JSON data and return
@@ -26,21 +27,24 @@ def connect():
 
         #test json loader and parser
         dataFetched = dataFetch()
-        #print(dataFetched)
         item_len = len(dataFetched)
-        for num in range(0,item_len):
-            print(dataFetched[num])
 
-        # postgres_insert_query = """ INSERT INTO json_data (id, brand_col, gram_col, image_col, name_col, price_col, qty_col, status_col, strain_col, type_col) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s)"""
-        # record_to_insert = ("5231b533-ba17-4787-98a3-f2df37de2ad7", "brandTest", 1, "testImg", "testName", 11, 12, "testStatus", "testStrain", "testType")
-        # cur.execute(postgres_insert_query, record_to_insert)
-        # conn.commit()
-        # count = cur.rowcount
-        # print(count, "Record inserted successfully")
+        for num in range(0,item_len):
+            myuuid = uuid.uuid4()
+            myuuidStr = str(myuuid)
+            #print(myuuidStr)
+            #print(dataFetched[num]["brand_col"])
+            postgres_insert_query = """ INSERT INTO json_data (id, brand_col, gram_col, image_col, name_col, price_col, qty_col, status_col, strain_col, type_col) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s)"""
+            record_to_insert = (myuuidStr, dataFetched[num]["brand_col"], dataFetched[num]["gram_col"], dataFetched[num]["image_col"], dataFetched[num]["name_col"], dataFetched[num]["price_col"], dataFetched[num]["qty_col"], dataFetched[num]["status_col"], dataFetched[num]["strain_col"], dataFetched[num]["type_col"])
+            cur.execute(postgres_insert_query, record_to_insert)
+            conn.commit()
+            count = cur.rowcount
+            print(count, "Record inserted successfully")
 
         # display the PostgreSQL database server version
+        cur.execute('SELECT version()')
         db_version = cur.fetchone()
-        #print(db_version)
+        print(db_version)
 
     # close the communication with the PostgreSQL
         cur.close()
