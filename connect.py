@@ -7,9 +7,6 @@ from psycopg2 import connect, Error
 
 def test():
     print('test')
-
-def connect():
-
     # accept command line arguments for the Postgres table name
     if len(sys.argv) > 1:
         table_name = '_'.join(sys.argv[1:])
@@ -20,57 +17,57 @@ def connect():
     print ("\ntable name for JSON data:", table_name)
 
     # use Python's open() function to load the JSON data
-    with open("./bin/final.json") as json_data:
+    with open("./bin/final.json", "r") as json_file:
 
-        # use load() rather than loads() for JSON files
-        record_list = json.load(json_data)
+        record_list = json.load(json_file)
+        print ("\nJSON records object type:", type(record_list)) # should return "<class 'list'>"
+        item_len = len(record_list)
+        #print(item_len)
+        for num in range(0,item_len):
+            print(record_list[num])
+            print(num)
+            #print(record_list['brand_col'][num])
+            #brand_col.append(data_dict['orderItems'][num]['brand_col'])
+        #for rows in record_list["json_data"]:
+            # keys = rows.keys()
+            # for x in keys:
+            #     print(x)
+            #print(keys)
+            #values = rows.values()
+            #print(values)
 
-        if type(record_list) == list:
-            first_record = record_list[0]
-            # get the column names from the first record
-            columns = list(first_record.keys())
-            print ("\ncolumn names:", columns)
-            table_name = "json_data"
-            sql_string = 'INSERT INTO {} '.format( table_name )
-            sql_string += "(" + ', '.join(columns) + ")\nVALUES "
-            # enumerate over the record
-            for i, record_dict in enumerate(record_list):
+        # for item in record_list("json_data"):
+        #     print(record_list[int(item)])
+        # # concatenate the SQL string
+        # table_name = "json_data"
+        # sql_string = "INSERT INTO %s (%s)\nVALUES %s" % (
+        #     table_name,
+        #     ', '.join(columns),
+        #     values_str
+        # )
 
-                # iterate over the values of each record dict object
-                values = []
-                for col_names, val in record_dict.items():
-
-                    # Postgres strings must be enclosed with single quotes
-                    if type(val) == str:
-                        # escape apostrophies with two single quotations
-                        val = val.replace("'", "''")
-                        val = "'" + val + "'"
-
-                    values += [ str(val) ]
-
-
-    """ Connect to the PostgreSQL database server """
-    conn = None
+def connect():
     try:
-        # read connection parameters
+    # read connection parameters
         params = config()
 
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params)
-		
+        
         # create a cursor
         cur = conn.cursor()
-        
-	# execute a statement
+        print ("\ncreated cursor object:", cur)
+
+        # execute a statement
         print('PostgreSQL database version:')
         cur.execute('SELECT version()')
         test()
         # display the PostgreSQL database server version
         db_version = cur.fetchone()
         print(db_version)
-       
-	# close the communication with the PostgreSQL
+
+    # close the communication with the PostgreSQL
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
