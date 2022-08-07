@@ -29,9 +29,8 @@ def connect():
         dataFetched = dataFetch()
         item_len = len(dataFetched)
 
-        # generate UUID for company ID, int has no subscriptable and must be short enough for DB
-        myuuid = str(uuid.uuid4().int)
-        companyId = int(myuuid[:4])
+        #fetch companyId
+        companyId = 
         for num in range(0,item_len):
             # generate UUID
             myuuid = uuid.uuid4()
