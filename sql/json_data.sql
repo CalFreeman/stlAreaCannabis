@@ -1,6 +1,6 @@
 CREATE TABLE json_data (
   id UUID PRIMARY KEY,
-  companies SMALLINT,
+  dispensary_id BIGINT,
   brand VARCHAR(255),
   gram VARCHAR(255),
   image VARCHAR(255),

@@ -42,3 +42,8 @@ TODO:
     when scraping iterate through pages
     work on products other than flower
     
+    update tables
+    update scripts that utilize tables
+    update company creation script
+    create dispensaries creation script
+    

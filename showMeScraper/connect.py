@@ -29,15 +29,15 @@ def connect():
         dataFetched = dataFetch()
         item_len = len(dataFetched)
 
-        #fetch companyId
-        companyId = 
+        #fetch dispensary_id
+        dispensary_id = 
         for num in range(0,item_len):
             # generate UUID
             myuuid = uuid.uuid4()
             myuuidStr = str(myuuid)
             # insert data
-            postgres_insert_query = """ INSERT INTO json_data (id, companies, brand, gram, image, name, price, qty, status, strain, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-            record_to_insert = (myuuidStr, companyId, dataFetched[num]["brand_col"], dataFetched[num]["gram_col"], dataFetched[num]["image_col"], dataFetched[num]["name_col"], dataFetched[num]["price_col"], dataFetched[num]["qty_col"], dataFetched[num]["status_col"], dataFetched[num]["strain_col"], dataFetched[num]["type_col"])
+            postgres_insert_query = """ INSERT INTO json_data (id, companies, brand, gram, image, name, price, quantity, status, strain, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            record_to_insert = (myuuidStr, dispensary_id, dataFetched[num]["brand"], dataFetched[num]["gram"], dataFetched[num]["image"], dataFetched[num]["name"], dataFetched[num]["price"], dataFetched[num]["quantity"], dataFetched[num]["status"], dataFetched[num]["strain"], dataFetched[num]["type"])
             cur.execute(postgres_insert_query, record_to_insert)
             conn.commit()
             count = cur.rowcount
