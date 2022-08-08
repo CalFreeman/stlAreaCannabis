@@ -5,8 +5,14 @@ import sys
 import urllib
 import uuid
 import subprocess
+import urllib.request
 from config import config
 from psycopg2 import connect, Error
+def fetchJsonEndpoint(json_url):
+    req = urllib.request.Request(json_url, headers={'User-Agent': 'Mozilla/5.0'})
+    html = urllib.request.urlopen(req).read()
+    print(html)
+    return html
 
 # fetch url to scrap
 def fetchUrlpsqlQuery(columnName, table, dispensary_id):
@@ -38,11 +44,13 @@ def connect():
         cur = conn.cursor()
         print ("\ncreated cursor object:", cur)
 
-        #need to provid param values
+        #fetch url end point to grab json_blob
         url = fetchUrlpsqlQuery(columnName, table, dispensary_id)
-        print (url)
+        print ("fetching: " + url)
         cur.execute(url)
-        json_blob = cur.fetchone()
+        json_url = cur.fetchone()
+        print("blob: " + json_url[0])
+        json_blob = fetchJsonEndpoint(json_url[0])
         print(json_blob)
         #publish()
 
