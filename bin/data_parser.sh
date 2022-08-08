@@ -1,9 +1,16 @@
 #!/bin/bash
+#sudo sh data_parser.sh <UUID>
 #scrap 2nd page if exist
 #loop through all URL's if one is not provided.
 declare -a scrap_url
 declare DISP_ID=$1 # pass disp_id
 declare FETCH_URL=$2 # pass a disp_table _url column
+
+#read url_columns.txt file into array
+arr=()
+while IFS= read -r line; do
+   arr+=("$line")
+done <url_columns.txt
 
 #dispensary_id passed when running script
 echo "depo_id: $DISP_ID"

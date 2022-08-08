@@ -1,0 +1,8 @@
+flower_url
+pre_rolls_url
+vaporizers_url
+concentrates_url
+edibles_url
+tinctures_url
+topicals_url
+cbd_url
