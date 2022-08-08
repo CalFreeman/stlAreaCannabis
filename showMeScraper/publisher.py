@@ -2,13 +2,13 @@
 import psycopg2
 import json
 import sys
-from config import config
+from .config import config
 from psycopg2 import connect, Error
 import uuid
 
 def dataFetch():
     # use Python's open() function to load the JSON data and return
-    with open("./bin/final.json", "r") as json_file:
+    with open("../bin/final.json", "r") as json_file:
         record_list = json.load(json_file)
     return record_list
 
