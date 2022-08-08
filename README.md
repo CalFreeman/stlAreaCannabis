@@ -46,4 +46,5 @@ TODO:
     update scripts that utilize tables
     update company creation script
     create dispensaries creation script
-    
+    -> new_dispensary.py
+    -> new_company.py
