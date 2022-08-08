@@ -51,18 +51,16 @@ def connect():
 
         json_blob = fetchJson(json_url[0])
 
-        tupleTest = publishUrlJson(json_blob)
+        publisher_data = publishUrlJson(json_blob)
 
-        print(tupleTest[0]) # [0] == uuid
-        query_to_run = tupleTest[0]
-        byteToString = str(tupleTest[1]) # [1] == json_blob
-        print(type(query_to_run))
-        print(type(byteToString))
-
-                # generate UUID
-        myuuid = uuid.uuid4()
-        myuuidStr = str(1234)
-        record_to_insert = (myuuidStr, json.dumps(byteToString))
+        print(publisher_data[0]) # [0] == uuid
+        query_to_run = publisher_data[0]
+        # Decode UTF-8 bytes to Unicode, and convert single quotes 
+        # to double quotes to make it valid JSON
+        byteToString = publisher_data[1][1].decode('utf8').replace("'", '"') # [1] == json_blob
+        generatedId = str(publisher_data[1][0])
+        print(generatedId)
+        record_to_insert = (generatedId, json.dumps(byteToString))
 
         cur.execute(query_to_run, record_to_insert)
 
