@@ -5,6 +5,7 @@ import sys
 import uuid
 from config import config
 from psycopg2 import connect, Error
+#python3 <company_id> <location>
 
 def connect():
     # total arguments

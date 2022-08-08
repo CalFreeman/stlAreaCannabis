@@ -1,18 +1,16 @@
 #!/bin/bash
-
-#pass dispensary_id as argument, 
-#fetch url text field and curl it.
 #scrap 2nd page if exist
 #clean up extra files created
 declare -a scrap_url
-declare DISP_ID=$1
+declare DISP_ID=$1 # pass disp_id
+declare FETCH_URL=$2 # pass a disp_table _url column
 
 #dispensary_id passed when running script
 echo "depo_id: $DISP_ID"
 
-SCRAP_URL=( $(psql -d testdb -U myuser -t -h 0.0.0.0 -p 5432 -c "SELECT url FROM dispensaries WHERE id = '28a2786e-7741-40ca-98d2-07ea464f4950';"))
-echo "SCRAP_URL: $SCRAP_URL"
-curl $SCRAP_URL >results.json
+scrap_url=( $(psql -d testdb -U myuser -t -h 0.0.0.0 -p 5432 -c "SELECT $FETCH_URL FROM dispensaries WHERE id = '$DISP_ID';"))
+echo "SCRAP_URL: $scrap_url"
+curl $scrap_url >results.json
 cat results.json |jq .data[].products[].Status >status
 cat results.json |jq .data[].products[].Prices[] >prices
 cat results.json |jq .data[].products[].strainType >strains
@@ -42,3 +40,5 @@ do
 done
 
 echo "]" >>final.json
+
+sudo rm brands grams images names prices quantity status strains
