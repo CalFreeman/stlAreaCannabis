@@ -24,13 +24,12 @@ def connect():
         print ("\ncreated cursor object:", cur)
 
         # generate UUID for company ID, int has no subscriptable and must be short enough for DB
-        myuuid = str(uuid.uuid4().int)
-        companies_id = int(myuuid[:8])
+        id = str(uuid.uuid4())
         company_name = sys.argv[1]
 
         # insert data
-        postgres_insert_query = """ INSERT INTO companies (companies_id, company_name) VALUES (%s, %s)"""
-        record_to_insert = (companies_id, company_name)
+        postgres_insert_query = """ INSERT INTO companies (id, company_name) VALUES (%s, %s)"""
+        record_to_insert = (id, company_name)
         cur.execute(postgres_insert_query, record_to_insert)
         conn.commit()
         count = cur.rowcount

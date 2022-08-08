@@ -31,6 +31,7 @@ do
 
         line="{${brand},${gram},${image},${name},${price},${quantity},${status},${strain},${type}},"
         echo $line >>final.json
+        sudo rm brands grams images names prices quantity status strains types
 done
 
 echo "]" >>final.json
