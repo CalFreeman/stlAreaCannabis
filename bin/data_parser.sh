@@ -1,20 +1,24 @@
 #!/bin/bash
 #sudo sh data_parser.sh <UUID>
 #scrap 2nd page if exist
-#loop through all URL's if one is not provided.
+#loop through all URL's if one is not provided, error handling of this
 declare -a scrap_url
 declare DISP_ID=$1 # pass disp_id
-declare FETCH_URL=$2 # pass a disp_table _url column
-
+declare FETCH_URL=flower_url
 #read url_columns.txt file into array
 arr=()
 while IFS= read -r line; do
    arr+=("$line")
 done <url_columns.txt
 
+for fetch_url in "${arr[@]}"
+do
+        echo $fetch_url
+done
+
 #dispensary_id passed when running script
 echo "depo_id: $DISP_ID"
-
+echo "FURL: $FETCH_URL"
 scrap_url=( $(psql -d testdb -U myuser -t -h 0.0.0.0 -p 5432 -c "SELECT $FETCH_URL FROM dispensaries WHERE id = '$DISP_ID';"))
 echo "SCRAP_URL: $scrap_url"
 curl $scrap_url >results.json
@@ -48,4 +52,4 @@ done
 
 echo "]" >>final.json
 
-sudo rm brands grams images names prices quantity status strains types
+rm brands grams images names prices quantity status strains types

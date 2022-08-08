@@ -6,12 +6,12 @@ import urllib
 import uuid
 import subprocess
 import urllib.request
+import random
 from config import config
 from psycopg2 import connect, Error
-def fetchJsonEndpoint(json_url):
+def fetchJson(json_url):
     req = urllib.request.Request(json_url, headers={'User-Agent': 'Mozilla/5.0'})
     html = urllib.request.urlopen(req).read()
-    print(html)
     return html
 
 # fetch url to scrap
@@ -19,14 +19,13 @@ def fetchUrlpsqlQuery(columnName, table, dispensary_id):
     psql_select_Query = "select " + columnName + " from " + table + " where id = '" + dispensary_id + "';"
     return psql_select_Query
 
-def publish():
-    subprocess.run(["../bin/data_parser.sh", "947808ec-f091-4507-bdc5-a1fb065f689d"])
-
-def dataFetch():
-    # use Python's open() function to load the JSON data and return
-    with open("../bin/final.json", "r") as json_file:
-        record_list = json.load(json_file)
-    return record_list
+# not working
+def publishUrlJson(json_blob):
+    uuid = random.randint(0, 10000)
+    psql_publish_Query = """ INSERT INTO json_blob (id, info) VALUES (%s, %s) """
+    record_to_insert = (uuid, json_blob)
+    print(uuid)
+    return psql_publish_Query, record_to_insert
 
 def connect():
     columnName = "flower_url"
@@ -37,40 +36,43 @@ def connect():
         params = config()
 
         # connect to the PostgreSQL server
-        print('Connecting to the PostgreSQL database...')
+        #print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params)
 
         # create a cursor
         cur = conn.cursor()
-        print ("\ncreated cursor object:", cur)
+        #print ("\ncreated cursor object:", cur)
 
         #fetch url end point to grab json_blob
         url = fetchUrlpsqlQuery(columnName, table, dispensary_id)
-        print ("fetching: " + url)
+        #print ("fetching: " + url)
         cur.execute(url)
         json_url = cur.fetchone()
-        print("blob: " + json_url[0])
-        json_blob = fetchJsonEndpoint(json_url[0])
-        print(json_blob)
-        #publish()
 
-        # # test json loader and parser
-        # dataFetched = dataFetch()
-        # item_len = len(dataFetched)
+        json_blob = fetchJson(json_url[0])
 
-        # #fetch dispensary_id
-        # dispensary_id = '947808ec-f091-4507-bdc5-a1fb065f689d'
-        # for num in range(0,item_len):
-        #     # generate UUID
-        #     myuuid = uuid.uuid4()
-        #     myuuidStr = str(myuuid)
-        #     # insert data
-        #     postgres_insert_query = """ INSERT INTO json_data (id, companies, brand, gram, image, name, price, quantity, status, strain, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        #     record_to_insert = (myuuidStr, dispensary_id, dataFetched[num]["brand"], dataFetched[num]["gram"], dataFetched[num]["image"], dataFetched[num]["name"], dataFetched[num]["price"], dataFetched[num]["quantity"], dataFetched[num]["status"], dataFetched[num]["strain"], dataFetched[num]["type"])
-        #     cur.execute(postgres_insert_query, record_to_insert)
-        #     conn.commit()
-        #     count = cur.rowcount
-        #     print(count, "Record inserted successfully")
+        tupleTest = publishUrlJson(json_blob)
+
+        print(tupleTest[0]) # [0] == uuid
+        query_to_run = tupleTest[0]
+        byteToString = str(tupleTest[1]) # [1] == json_blob
+        print(type(query_to_run))
+        print(type(byteToString))
+
+                # generate UUID
+        myuuid = uuid.uuid4()
+        myuuidStr = str(1234)
+        record_to_insert = (myuuidStr, json.dumps(byteToString))
+
+        cur.execute(query_to_run, record_to_insert)
+
+        print("brkpt")
+
+        conn.commit()
+        
+        print("test")
+        count = cur.rowcount
+        print(count, "Record inserted successfully")
 
         # # display the PostgreSQL database server version
         # cur.execute('SELECT version()')
