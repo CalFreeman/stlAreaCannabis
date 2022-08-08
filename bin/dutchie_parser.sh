@@ -1,6 +1,6 @@
 #!/bin/bash
 #scrap 2nd page if exist
-#clean up extra files created
+#loop through all URL's if one is not provided.
 declare -a scrap_url
 declare DISP_ID=$1 # pass disp_id
 declare FETCH_URL=$2 # pass a disp_table _url column
@@ -41,4 +41,4 @@ done
 
 echo "]" >>final.json
 
-sudo rm brands grams images names prices quantity status strains
+sudo rm brands grams images names prices quantity status strains types
