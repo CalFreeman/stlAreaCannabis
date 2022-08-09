@@ -19,9 +19,9 @@ def fetchUrlpsqlQuery(columnName, table, dispensary_id):
     psql_select_Query = "select " + columnName + " from " + table + " where id = '" + dispensary_id + "';"
     return psql_select_Query
 
-# not working
+# Returns query and tuple of data to publish
 def publishUrlJson(json_blob):
-    uuid = random.randint(0, 10000)
+    uuid = random.randint(1000, 10000)
     psql_publish_Query = """ INSERT INTO json_blob (id, info) VALUES (%s, %s) """
     record_to_insert = (uuid, json_blob)
     print(uuid)
@@ -36,47 +36,29 @@ def connect():
         params = config()
 
         # connect to the PostgreSQL server
-        #print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(**params)
 
         # create a cursor
         cur = conn.cursor()
-        #print ("\ncreated cursor object:", cur)
 
         #fetch url end point to grab json_blob
         url = fetchUrlpsqlQuery(columnName, table, dispensary_id)
-        #print ("fetching: " + url)
         cur.execute(url)
+
         json_url = cur.fetchone()
-
         json_blob = fetchJson(json_url[0])
-
         publisher_data = publishUrlJson(json_blob)
-
-        print(publisher_data[0]) # [0] == uuid
-        query_to_run = publisher_data[0]
+        
         # Decode UTF-8 bytes to Unicode, and convert single quotes 
         # to double quotes to make it valid JSON
-        byteToString = publisher_data[1][1].decode('utf8').replace("'", '"') # [1] == json_blob
+        byteToString = publisher_data[1][1].decode('utf8')#.replace("'", '"') # [1] == json_blob
         generatedId = str(publisher_data[1][0])
-        print(generatedId)
-        record_to_insert = (generatedId, json.dumps(byteToString))
-
+        record_to_insert = (generatedId, byteToString)
+        query_to_run = publisher_data[0]
         cur.execute(query_to_run, record_to_insert)
-
-        print("brkpt")
-
         conn.commit()
-        
-        print("test")
         count = cur.rowcount
         print(count, "Record inserted successfully")
-
-        # # display the PostgreSQL database server version
-        # cur.execute('SELECT version()')
-        # db_version = cur.fetchone()
-        # print(db_version)
-
     # close the communication with the PostgreSQL
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
