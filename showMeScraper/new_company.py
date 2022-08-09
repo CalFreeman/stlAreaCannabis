@@ -5,7 +5,7 @@ import sys
 import uuid
 from config import config
 from psycopg2 import connect, Error
-#test this
+#$python3 new_company.py <company_name>
 def connect():
     # total arguments
     n = len(sys.argv)

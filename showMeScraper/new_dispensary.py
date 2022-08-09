@@ -7,6 +7,7 @@ from config import config
 from psycopg2 import connect, Error
 #python3 <company_id> <location>
 #URL BLOCK needs to be set manually
+#TODO Dynamic URL BLOCK
 
 def connect():
     # total arguments

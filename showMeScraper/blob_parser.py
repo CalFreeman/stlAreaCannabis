@@ -9,7 +9,11 @@ import urllib.request
 import random
 from config import config
 from psycopg2 import connect, Error
-def fetchJson(json_url):
+
+#TODO dynamic params for fetching fetchUrlpsqlQuery
+#need to provide end point to fetch dispensary_ids and iteratite over all columns
+
+def fetch_json(json_url):
     req = urllib.request.Request(json_url, headers={'User-Agent': 'Mozilla/5.0'})
     html = urllib.request.urlopen(req).read()
     return html
@@ -28,6 +32,7 @@ def publishUrlJson(json_blob):
     return psql_publish_Query, record_to_insert
 
 def connect():
+    #TODO add dynamic params here
     columnName = "flower_url"
     table = "dispensaries"
     dispensary_id = "947808ec-f091-4507-bdc5-a1fb065f689d" 
@@ -46,7 +51,7 @@ def connect():
         cur.execute(url)
 
         json_url = cur.fetchone()
-        json_blob = fetchJson(json_url[0])
+        json_blob = fetch_json(json_url[0])
         publisher_data = publishUrlJson(json_blob)
         
         # Decode UTF-8 bytes to Unicode, and convert single quotes 
@@ -59,7 +64,7 @@ def connect():
         conn.commit()
         count = cur.rowcount
         print(count, "Record inserted successfully")
-    # close the communication with the PostgreSQL
+        # close the communication with the PostgreSQL
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
