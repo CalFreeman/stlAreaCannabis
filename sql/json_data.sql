@@ -1,6 +1,7 @@
-CREATE TABLE json_data (
+CREATE TABLE json_normalized (
   id UUID PRIMARY KEY,
   dispensary_id BIGINT,
+  json_raw_id BIGINT,
   brand VARCHAR(255),
   gram VARCHAR(255),
   image VARCHAR(255),

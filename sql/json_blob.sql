@@ -1,4 +1,4 @@
-CREATE TABLE json_blob (
+CREATE TABLE json_raw (
   id serial PRIMARY KEY,
-  info json
+  json_blob json
 );

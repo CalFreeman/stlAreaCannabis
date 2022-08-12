@@ -35,16 +35,11 @@ ERROR RESOLUTION:
 https://stackoverflow.com/questions/12911717/error-command-gcc-failed-with-exit-status-when-installing-psycopg2
 
 TODO:
-    python modules need pyscripts pull db info from root dir
-    dynamic webscraper
     storing urls for webscraping
-    pulling companyId when Post scrapped data
     when scraping iterate through pages
-    work on products other than flower
     
     update tables
     update scripts that utilize tables
-    update company creation script
-    create dispensaries creation script
-    -> new_dispensary.py
-    -> new_company.py
+    TODO new_company.py
+    TODO new_dispensary.py
+    TODO publisher.py
