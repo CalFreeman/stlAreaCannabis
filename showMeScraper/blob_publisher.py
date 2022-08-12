@@ -11,6 +11,7 @@ from config import config
 from psycopg2 import connect, Error
 
 #TODO dynamic params for fetching fetchUrlpsqlQuery
+#TODO Update uuid generator in publishUrlJson
 #need to provide end point to fetch dispensary_ids and iteratite over all columns
 
 def fetch_json(json_url):
@@ -26,7 +27,7 @@ def fetchUrlpsqlQuery(columnName, table, dispensary_id):
 # Returns query and tuple of data to publish
 def publishUrlJson(json_blob):
     uuid = random.randint(1000, 10000)
-    psql_publish_Query = """ INSERT INTO json_blob (id, info) VALUES (%s, %s) """
+    psql_publish_Query = """ INSERT INTO json_raw (id, info) VALUES (%s, %s) """
     record_to_insert = (uuid, json_blob)
     print(uuid)
     return psql_publish_Query, record_to_insert

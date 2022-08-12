@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import psycopg2
 import json
-import sys
 import urllib
 import uuid
 import subprocess
@@ -10,15 +9,13 @@ import random
 from config import config
 from psycopg2 import connect, Error
 
-#TODO dynamic params for fetching fetchUrlpsqlQuery
-#need to provide end point to fetch dispensary_ids and iteratite over all columns
+#1 fetch params for blob & build query string
+#2 fetch blob
+#3 parse blob
+#4 post blob
+#Rename to consume? or is new_dispensary have the consumer?
 
-def fetch_json(json_url):
-    req = urllib.request.Request(json_url, headers={'User-Agent': 'Mozilla/5.0'})
-    html = urllib.request.urlopen(req).read()
-    return html
-
-# fetch url to scrap
+#1 fetch params for blob & build query string
 def fetchUrlpsqlQuery(columnName, table, dispensary_id):
     psql_select_Query = "select " + columnName + " from " + table + " where id = '" + dispensary_id + "';"
     return psql_select_Query
