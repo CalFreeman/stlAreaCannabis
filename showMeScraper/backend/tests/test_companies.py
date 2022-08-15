@@ -58,12 +58,19 @@ class TestCreateCompany:
 
 class TestGetCompany:
     async def test_get_company_by_id(
-        self, app: FastAPI, client: AsyncClient
+        self, app: FastAPI, client: AsyncClient, test_company: CompanyInDB
     ) -> None:
         res = await client.get(
-            app.url_path_for("companies:get-company-by-id", id=1)
+            app.url_path_for("companies:get-company-by-id", id=test_company.id)
         )
         assert res.status_code == HTTP_200_OK
 
         company = CompanyInDB(**res.json())
-        assert company.id == 1
+        assert company == test_company
+
+    @pytest.mark.parametrize(
+        "id, status_code", ((500, 404), (-1, 404), (None, 422),),
+    )
+    async def test_wrong_id_returns_error(self, app: FastAPI, client: AsyncClient, id: int, status_code: int) -> None:
+        res = await client.get(app.url_path_for("companies:get-company-by-id", id=id))
+        assert res.status_code == status_code

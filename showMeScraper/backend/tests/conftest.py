@@ -8,6 +8,10 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 from databases import Database
 
+from app.models.companies import CompanyCreate, CompanyInDB
+from app.db.repositories.companies import CompaniesRepository
+
+
 import alembic
 from alembic.config import Config
 
@@ -37,6 +41,13 @@ def app(apply_migrations: None) -> FastAPI:
 def db(app: FastAPI) -> Database:
     return app.state._db
 
+@pytest.fixture
+async def test_company(db: Database) -> CompanyInDB:
+    company_repo = CompaniesRepository(db)
+    new_company = CompanyCreate(
+        name="fake company name"
+    )
+    return await company_repo.create_company(new_company=new_company)
 
 # Make requests in our tests
 @pytest.fixture
