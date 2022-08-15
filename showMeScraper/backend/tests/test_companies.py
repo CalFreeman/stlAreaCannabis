@@ -3,8 +3,10 @@ import pytest
 from httpx import AsyncClient
 from fastapi import FastAPI
 
-from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
-from app.models.companies import CompanyCreate
+from starlette.status import (
+    HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
+)
+from app.models.companies import CompanyCreate, CompanyInDB
 
 # decorate all tests with @pytest.mark.asyncio
 pytestmark = pytest.mark.asyncio  
@@ -53,3 +55,15 @@ class TestCreateCompany:
             app.url_path_for("companies:create-company"), json={"new_company": invalid_payload}
         )
         assert res.status_code == status_code
+
+class TestGetCompany:
+    async def test_get_company_by_id(
+        self, app: FastAPI, client: AsyncClient
+    ) -> None:
+        res = await client.get(
+            app.url_path_for("companies:get-company-by-id", id=1)
+        )
+        assert res.status_code == HTTP_200_OK
+
+        company = CompanyInDB(**res.json())
+        assert company.id == 1

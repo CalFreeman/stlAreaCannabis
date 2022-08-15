@@ -1,7 +1,7 @@
 from typing import List
 
-from fastapi import APIRouter, Body, Depends  
-from starlette.status import HTTP_201_CREATED  
+from fastapi import APIRouter, Body, Depends, HTTPException
+from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
 from app.models.companies import CompanyCreate, CompanyPublic  
 from app.db.repositories.companies import CompaniesRepository  
@@ -27,3 +27,11 @@ async def create_new_company(
 
     return created_company
 
+@router.get("/{id}/", response_model=CompanyPublic, name="companies:get-company-by-id")
+async def get_company_by_id(
+  id: int, companies_repo: CompaniesRepository = Depends(get_repository(CompaniesRepository))
+) -> CompanyPublic:
+    company = await companies_repo.get_company_by_id(id=id)
+    if not company:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No company found with that id.")
+    return company
