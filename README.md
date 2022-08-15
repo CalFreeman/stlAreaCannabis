@@ -34,12 +34,7 @@ docker
 ERROR RESOLUTION:
 https://stackoverflow.com/questions/12911717/error-command-gcc-failed-with-exit-status-when-installing-psycopg2
 
-TODO:
-    storing urls for webscraping
-    when scraping iterate through pages
-    
-    update tables
-    update scripts that utilize tables
-    TODO new_company.py
-    TODO new_dispensary.py
-    TODO publisher.py
+## TODO:
+   ### docker-compose app service needs volumes
+   ### 
+   ###

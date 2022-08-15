@@ -21,11 +21,11 @@ services:
     restart: unless-stopped
   server:
     build:
-      context: showMeScraper/backend
+      context: ./showMeScraper/backend
       dockerfile: Dockerfile
     command: uvicorn app.api.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
     env_file:
-      - ./showMeScraper/backend/.env
+      - showMeScraper/backend/.env
     ports:
       - 8000:8000
 volumes:
