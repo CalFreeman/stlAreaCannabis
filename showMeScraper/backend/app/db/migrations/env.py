@@ -57,7 +57,7 @@ def run_migrations_offline() -> None:
     """
     Run migrations in 'offline' mode.
     """
-    
+
     if os.environ.get("TESTING"):
         raise DatabaseError("Running testing migrations offline currently not permitted.")
 
