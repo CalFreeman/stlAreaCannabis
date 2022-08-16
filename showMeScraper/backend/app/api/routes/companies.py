@@ -9,14 +9,11 @@ from app.api.dependencies.database import get_repository
 
 router = APIRouter()
 
-@router.get("/")
-async def get_all_companies() -> List[dict]:
-    companies = [
-        {"id": 1, "name": "My house"},
-        {"id": 2, "name": "Someone else's house"}
-    ]
-
-    return companies
+@router.get("/", response_model=List[CompanyPublic], name="companies:get-all-companies")
+async def get_all_companies(
+    companies_repo: CompaniesRepository = Depends(get_repository(CompaniesRepository)) 
+) -> List[CompanyPublic]:
+    return await companies_repo.get_all_companies() 
 
 @router.post("/", response_model=CompanyPublic, name="companies:create-company", status_code=HTTP_201_CREATED)
 async def create_new_company(

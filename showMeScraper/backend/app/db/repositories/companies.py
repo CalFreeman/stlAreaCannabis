@@ -1,5 +1,6 @@
 from app.db.repositories.base import BaseRepository
 from app.models.companies import CompanyCreate, CompanyUpdate, CompanyInDB
+from typing import List 
 
 
 CREATE_COMPANY_QUERY = """
@@ -11,6 +12,11 @@ GET_COMPANY_BY_ID_QUERY = """
     SELECT id, name
     FROM companies
     WHERE id = :id;
+"""
+
+GET_ALL_COMPANIES_QUERY = """
+    SELECT id, name 
+    FROM companies;  
 """
 
 class CompaniesRepository(BaseRepository):
@@ -30,3 +36,8 @@ class CompaniesRepository(BaseRepository):
             return None
             
         return CompanyInDB(**company)
+    async def get_all_companies(self) -> List[CompanyInDB]:
+        companies_records = await self.db.fetch_all(
+            query=GET_ALL_COMPANIES_QUERY,
+        )
+        return [CompanyInDB(**l) for l in companies_records]
