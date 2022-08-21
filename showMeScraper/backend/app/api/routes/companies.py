@@ -52,3 +52,20 @@ async def update_company_by_id(
             detail="No companies found with that id.",
         )
     return updated_company
+
+@router.delete("/{id}/", response_model=int, name="companies:delete-company-by-id")
+async def delete_company_by_id(
+    id: int = Path(..., ge=1, title="The ID of the company to delete."),
+    companies_repo: CompaniesRepository = Depends(get_repository(CompaniesRepository)),
+) -> int:
+    deleted_id = await companies_repo.delete_company_by_id(id=id)
+
+    if not deleted_id:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND, 
+            detail="No company found with that id.",
+        )
+
+    return deleted_id
+
+#

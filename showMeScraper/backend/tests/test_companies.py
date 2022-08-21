@@ -29,7 +29,7 @@ class TestCompaniesRoutes:
         res = await client.post(app.url_path_for("companies:create-company"), json={})
         assert res.status_code == HTTP_422_UNPROCESSABLE_ENTITY
 
-
+# POST TEST
 class TestCreateCompany:
     async def test_valid_input_creates_company(
         self, app: FastAPI, client: AsyncClient, new_company: CompanyCreate
@@ -56,6 +56,7 @@ class TestCreateCompany:
         )
         assert res.status_code == status_code
 
+# GET TEST
 class TestGetCompany:
     async def test_get_company_by_id(
         self, app: FastAPI, client: AsyncClient, test_company: CompanyInDB
@@ -85,6 +86,7 @@ class TestGetCompany:
         companies = [CompanyInDB(**l) for l in res.json()]
         assert test_company in companies
 
+# PUT TEST
 class TestUpdateCompany:
     @pytest.mark.parametrize(
         "attrs_to_change, values",
@@ -148,3 +150,52 @@ class TestUpdateCompany:
             json=company_update
         )
         assert res.status_code == status_code
+
+# DELETE TEST
+class TestDeleteCompany:
+
+    async def test_can_delete_company_successfully(
+        self,
+        app: FastAPI,
+        client: AsyncClient,
+        test_company: CompanyInDB,
+    ) -> None:
+        # delete the company
+        res = await client.delete(
+            app.url_path_for(
+                "companies:delete-company-by-id", 
+                id=test_company.id,
+            ),
+        )
+        assert res.status_code == HTTP_200_OK
+        # ensure that the company no longer exists
+        res = await client.get(
+            app.url_path_for(
+                "companies:get-company-by-id", 
+                id=test_company.id,
+            ),
+        )
+        assert res.status_code == HTTP_404_NOT_FOUND
+
+    @pytest.mark.parametrize(
+        "id, status_code",
+        (
+            (500, 404),
+            (0, 422),
+            (-1, 422),
+            (None, 422),
+        ),
+    )
+    async def test_delete_company_with_invalid_input_throws_error(
+        self,
+        app: FastAPI,
+        client: AsyncClient,
+        test_company: CompanyInDB,
+        id: int,
+        status_code: int,
+    ) -> None:
+        res = await client.delete(
+            app.url_path_for("companies:delete-company-by-id", id=id),
+        )
+        assert res.status_code == status_code  
+

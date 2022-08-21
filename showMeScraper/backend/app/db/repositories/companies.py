@@ -38,6 +38,12 @@ UPDATE_COMPANY_BY_ID_QUERY = """
     RETURNING id, name; 
 """
 
+DELETE_COMPANY_BY_ID_QUERY = """
+    DELETE FROM companies  
+    WHERE id = :id  
+    RETURNING id;  
+""" 
+
 class CompaniesRepository(BaseRepository):
     """"
     All database actions associated with the Companies resource
@@ -82,3 +88,13 @@ class CompaniesRepository(BaseRepository):
                 status_code=HTTP_400_BAD_REQUEST, 
                 detail="Invalid update params.",
             )
+
+    async def delete_company_by_id(self, *, id: int) -> int:
+        company = await self.get_company_by_id(id=id)
+        if not company:
+            return None
+        deleted_id = await self.db.execute(
+            query=DELETE_COMPANY_BY_ID_QUERY, 
+            values={"id": id},
+        )
+        return deleted_id
