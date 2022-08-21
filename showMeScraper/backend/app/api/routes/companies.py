@@ -1,9 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
-from app.models.companies import CompanyCreate, CompanyPublic  
+from app.models.companies import CompanyCreate, CompanyPublic, CompanyUpdate
 from app.db.repositories.companies import CompaniesRepository  
 from app.api.dependencies.database import get_repository  
 
@@ -32,3 +32,23 @@ async def get_company_by_id(
     if not company:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No company found with that id.")
     return company
+
+@router.put(
+    "/{id}/", 
+    response_model=CompanyPublic, 
+    name="companies:update-company-by-id",
+)
+async def update_company_by_id(
+    id: int = Path(..., ge=1, title="The ID of the Company to update."),
+    company_update: CompanyUpdate = Body(..., embed=True),
+    companies_repo: CompaniesRepository = Depends(get_repository(CompaniesRepository)),
+) -> CompanyPublic:
+    updated_company = await companies_repo.update_company(
+        id=id, company_update=company_update,
+    )
+    if not updated_company:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND, 
+            detail="No companies found with that id.",
+        )
+    return updated_company

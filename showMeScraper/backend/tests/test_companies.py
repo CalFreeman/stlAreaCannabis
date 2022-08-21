@@ -1,5 +1,5 @@
 import pytest
-
+from typing import List, Union
 from httpx import AsyncClient
 from fastapi import FastAPI
 
@@ -85,3 +85,66 @@ class TestGetCompany:
         companies = [CompanyInDB(**l) for l in res.json()]
         assert test_company in companies
 
+class TestUpdateCompany:
+    @pytest.mark.parametrize(
+        "attrs_to_change, values",
+        (
+            (["name"], ["new fake company name"]),
+            (["name"], ["new fake company name2"]),
+        ),
+    )
+    async def test_update_company_with_valid_input(
+        self, 
+        app: FastAPI, 
+        client: AsyncClient, 
+        test_company: CompanyInDB, 
+        attrs_to_change: List[str], 
+        values: List[str],
+    ) -> None:
+        company_update = {
+            "company_update": {
+                attrs_to_change[i]: values[i] for i in range(len(attrs_to_change))
+            }
+        }
+        res = await client.put(
+            app.url_path_for(
+                "companies:update-company-by-id",
+                id=test_company.id,
+            ),
+            json=company_update
+        )
+        assert res.status_code == HTTP_200_OK
+        updated_company = CompanyInDB(**res.json())
+        assert updated_company.id == test_company.id  # make sure it's the same company
+        # make sure that any attribute we updated has changed to the correct value
+        for i in range(len(attrs_to_change)):
+            attr_to_change = getattr(updated_company, attrs_to_change[i])
+            assert attr_to_change != getattr(test_company, attrs_to_change[i])
+            assert attr_to_change == values[i] 
+        # make sure that no other attributes' values have changed
+        for attr, value in updated_company.dict().items():
+            if attr not in attrs_to_change:
+                assert getattr(test_company, attr) == value
+    @pytest.mark.parametrize(
+        "id, payload, status_code",
+        (
+            (-1, {"name": "test"}, 422),
+            (0, {"name": "test2"}, 422),
+            (500, {"name": "test3"}, 404),
+            (1, None, 422),
+        ),
+    )
+    async def test_update_company_with_invalid_input_throws_error(
+        self,
+        app: FastAPI,
+        client: AsyncClient,
+        id: int,
+        payload: dict,
+        status_code: int,
+    ) -> None:
+        company_update = {"company_update": payload}
+        res = await client.put(
+            app.url_path_for("companies:update-company-by-id", id=id),
+            json=company_update
+        )
+        assert res.status_code == status_code
