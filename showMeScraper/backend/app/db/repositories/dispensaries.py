@@ -1,5 +1,10 @@
+from typing import List
+from fastapi import HTTPException
+from starlette.status import HTTP_400_BAD_REQUEST
+
 from app.db.repositories.base import BaseRepository
 from app.models.dispensaries import DispensaryCreate, DispensaryUpdate, DispensaryInDB
+
 
 CREATE_DISPENSARY_FOR_COMPANY_QUERY = """
     INSERT INTO dispensaries (company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, cbd_url, address) 
@@ -11,7 +16,7 @@ GET_DISPENSARY_BY_COMPANY_ID_QUERY = """
     FROM dispensaries
     WHERE user_id = :user_id;
 """
-class DispensaryRepository(BaseRepository):
+class DispensariesRepository(BaseRepository):
 
     async def create_dispensary(self, *, new_dispensary: DispensaryCreate) -> DispensaryInDB:
         query_values = new_dispensary.dict()

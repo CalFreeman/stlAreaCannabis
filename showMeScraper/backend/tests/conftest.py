@@ -11,6 +11,8 @@ from databases import Database
 from app.models.companies import CompanyCreate, CompanyInDB
 from app.db.repositories.companies import CompaniesRepository
 
+from app.models.dispensaries import DispensaryCreate, DispensaryInDB
+from app.db.repositories.dispensaries import DispensariesRepository
 
 import alembic
 from alembic.config import Config
@@ -48,6 +50,18 @@ async def test_company(db: Database) -> CompanyInDB:
         name="fake company name"
     )
     return await company_repo.create_company(new_company=new_company)
+
+@pytest.fixture
+async def test_dispensary(db: Database) -> DispensaryInDB:
+    new_dispensary = DispensaryCreate(company_id=1, flower_url="test")
+
+    dispensaries_repo = DispensariesRepository(db)
+
+    existing_dispensary = await dispensaries_repo.get_dispensary_by_id(company_id=new_dispensary.company_id)
+    if existing_dispensary:
+        return existing_dispensary
+
+    return await dispensaries_repo.register_new_dispensary(new_dispensary=new_dispensary)
 
 # Make requests in our tests
 @pytest.fixture
