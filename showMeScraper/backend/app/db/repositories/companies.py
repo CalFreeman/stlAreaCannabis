@@ -10,7 +10,7 @@ from app.models.companies import CompanyCreate, CompanyUpdate, CompanyInDB
 #     SET name         = :name,  
 #         description  = :description,  
 #         price        = :price,  
-#         cleaning_type = :cleaning_type  
+#         cleaning_type = :cleaning_type  wwwwwwwwwwwww
 #     WHERE id = :id  
 #     RETURNING id, name, description, price, cleaning_type;  
 # """

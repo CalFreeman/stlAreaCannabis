@@ -1,6 +1,5 @@
 from typing import Optional
 from enum import Enum
-
 from app.models.core import IDModelMixin, CoreModel
 
 class CompanyBase(CoreModel):
