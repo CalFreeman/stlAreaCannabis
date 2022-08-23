@@ -37,7 +37,6 @@ def app(apply_migrations: None) -> FastAPI:
 
     return  get_application()
 
-
 # Grab a reference to our database when needed
 @pytest.fixture
 def db(app: FastAPI) -> Database:

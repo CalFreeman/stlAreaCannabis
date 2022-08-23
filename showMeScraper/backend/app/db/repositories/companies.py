@@ -61,6 +61,7 @@ class CompaniesRepository(BaseRepository):
             return None
             
         return CompanyInDB(**company)
+        
     async def get_all_companies(self) -> List[CompanyInDB]:
         companies_records = await self.db.fetch_all(
             query=GET_ALL_COMPANIES_QUERY,

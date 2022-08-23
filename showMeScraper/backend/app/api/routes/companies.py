@@ -67,5 +67,3 @@ async def delete_company_by_id(
         )
 
     return deleted_id
-
-#

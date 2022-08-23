@@ -52,3 +52,17 @@ async def update_dispensary_by_id(
             detail="No dispensary found with that id.",
         )
     return updated_dispensary
+
+@router.delete("/{id}/", response_model=int, name="dispensary:delete-dispensary-by-id")
+async def delete_dispensary_by_id(
+    id: int = Path(..., ge=1, title="The ID of the dispensary to delete."),
+    dispensary_repo: DispensariesRepository = Depends(get_repository(DispensariesRepository)),
+) -> int:
+    deleted_id = await dispensaries_repo.delete_dispensary_by_id(id=id)
+    if not deleted_id:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND, 
+            detail="No dispensary found with that id.",
+        )
+
+    return deleted_id
