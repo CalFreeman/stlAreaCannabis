@@ -7,12 +7,12 @@ from app.models.dispensaries import DispensaryCreate, DispensaryUpdate, Dispensa
 
 
 CREATE_DISPENSARY_FOR_COMPANY_QUERY = """
-    INSERT INTO dispensaries (company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, cbd_url, address) 
-    VALUES (:company_id, :flower_url, :pre_rolls_url, :vaporizers_url, :concentrates_url, :edibles_url, :tinctures_url, :cbd_url, :address)
-    RETURNING id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, cbd_url, created_at, updated_at;
+    INSERT INTO dispensaries (company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, address) 
+    VALUES (:company_id, :flower_url, :pre_rolls_url, :vaporizers_url, :concentrates_url, :edibles_url, :tinctures_url, :cbd_url, :topicals_url, :address)
+    RETURNING id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, created_at, updated_at;
 """
 GET_DISPENSARY_BY_COMPANY_ID_QUERY = """
-    SELECT id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, cbd_url, address, created_at, updated_at
+    SELECT id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, address, created_at, updated_at
     FROM dispensaries
     WHERE user_id = :user_id;
 """
