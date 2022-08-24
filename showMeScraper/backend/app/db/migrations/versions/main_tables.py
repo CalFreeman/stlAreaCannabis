@@ -1,13 +1,14 @@
 """create main tables
-Revision ID: ce927eecb864
+Revision ID: 29179440750b
 Revises:
 Create Date: 2020-05-05 10:41:35.468471
 """
 from typing import Tuple
 from alembic import op
 import sqlalchemy as sa
+
 # revision identifiers, used by Alembic
-revision = "ce927eecb864"
+revision = "29179440750b"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +25,7 @@ def create_updated_at_trigger() -> None:
         $$ language 'plpgsql';
         """
     )
-    
+
 def timestamps(indexed: bool = False) -> Tuple[sa.Column, sa.Column]:
     return (
         sa.Column(
@@ -86,11 +87,30 @@ def create_dispensaries_table() -> None:
         """
     )
 
+def create_raw_json_table() -> None:
+    op.create_table(
+        "raw_json",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("json_doc", sa.JSON(), nullable=True),
+        *timestamps(),
+    )
+    op.execute(
+        """
+        CREATE TRIGGER update_raw_json_modtime
+            BEFORE UPDATE
+            ON raw_json
+            FOR EACH ROW
+        EXECUTE PROCEDURE update_updated_at_column();
+        """
+    )
+
 def upgrade() -> None:
     create_updated_at_trigger()
     create_companies_table()
     create_dispensaries_table()
+    create_raw_json_table()
 def downgrade() -> None: 
     op.drop_table("dispensaries")
     op.drop_table("companies")
+    op.drop_table("raw_json")
     op.execute("DROP FUNCTION update_updated_at_column")

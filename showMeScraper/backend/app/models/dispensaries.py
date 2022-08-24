@@ -25,7 +25,6 @@ class DispensaryCreate(DispensaryBase):
 class DispensaryInDB(IDModelMixin, DateTimeModelMixin, DispensaryBase):
     company_id: int
 
-
 class DispensaryPublic(IDModelMixin, DateTimeModelMixin, DispensaryBase):
     pass
 

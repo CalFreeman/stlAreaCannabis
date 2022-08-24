@@ -5,16 +5,6 @@ from starlette.status import HTTP_400_BAD_REQUEST
 from app.db.repositories.base import BaseRepository
 from app.models.companies import CompanyCreate, CompanyUpdate, CompanyInDB
 
-# UPDATE_Company_BY_ID_QUERY = """
-#     UPDATE cleanings  
-#     SET name         = :name,  
-#         description  = :description,  
-#         price        = :price,  
-#         cleaning_type = :cleaning_type  wwwwwwwwwwwww
-#     WHERE id = :id  
-#     RETURNING id, name, description, price, cleaning_type;  
-# """
-
 CREATE_COMPANY_QUERY = """
     INSERT INTO companies (name)
     VALUES (:name)
@@ -61,7 +51,7 @@ class CompaniesRepository(BaseRepository):
             return None
             
         return CompanyInDB(**company)
-        
+
     async def get_all_companies(self) -> List[CompanyInDB]:
         companies_records = await self.db.fetch_all(
             query=GET_ALL_COMPANIES_QUERY,
