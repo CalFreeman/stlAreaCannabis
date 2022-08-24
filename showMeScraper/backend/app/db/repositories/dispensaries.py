@@ -35,7 +35,7 @@ UPDATE_DISPENSARY_BY_ID_QUERY = """
         topicals_url        = :topicals_url,
         address             = :address
     WHERE id = :id  
-    RETURNING id, company_id, address, created_at, updated_at;
+    RETURNING id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, address, created_at, updated_at;
 """
 
 DELETE_DISPENSARY_BY_ID_QUERY = """
@@ -72,7 +72,7 @@ class DispensariesRepository(BaseRepository):
             values=update_params.dict(exclude={"company_id", "created_at", "updated_at"}),
         )
         print(updated_dispensary)
-        #return DispensaryInDB(**updated_dispensary)
+        return DispensaryInDB(**updated_dispensary)
         #return [DispensaryInDB(**updated_dispensary) for update_dispensary in updated_dispensary]
 
     async def delete_dispensary_by_id(self, *, id: int) -> int:

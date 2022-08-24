@@ -37,4 +37,5 @@ https://stackoverflow.com/questions/12911717/error-command-gcc-failed-with-exit-
 ## TODO:
    ### docker-compose app service needs volumes
    ### remove hardcoded ID in tests/test_companies.py in func test_get_companies_by_id()
-   ###
+   ### write dispensary tests
+   ### test dispensary put, need columns unqness change
