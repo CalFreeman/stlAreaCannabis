@@ -11,11 +11,13 @@ CREATE_DISPENSARY_FOR_COMPANY_QUERY = """
     VALUES (:company_id, :flower_url, :pre_rolls_url, :vaporizers_url, :concentrates_url, :edibles_url, :tinctures_url, :cbd_url, :topicals_url, :address)
     RETURNING id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, created_at, updated_at;
 """
-GET_DISPENSARY_BY_COMPANY_ID_QUERY = """
+
+GET_DISPENSARY_BY_ID_QUERY = """
     SELECT id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, address, created_at, updated_at
     FROM dispensaries
-    WHERE user_id = :user_id;
+    WHERE id = :id;
 """
+
 GET_ALL_DISPENSARY_QUERY = """
     SELECT id, company_id, flower_url, pre_rolls_url, vaporizers_url, concentrates_url, edibles_url, tinctures_url, topicals_url, cbd_url, address, created_at, updated_at
     FROM dispensaries
@@ -23,18 +25,17 @@ GET_ALL_DISPENSARY_QUERY = """
 
 UPDATE_DISPENSARY_BY_ID_QUERY = """
     UPDATE dispensaries
-    SET company_id = :company_id,
-        flower_url = :flower_url,
-        pre_rolls_url = :pre_rolls_url,
-        vaporizers_url = :vaporizers_url,
-        concentrates_url = :concentrates_url,
-        edibles_url = :edibles_url,
-        tinctures_url = :tinctures_url,
-        cbd_url = :cbd_url,
-        topicals_url = :topicals_url,
-        address = :address
+    SET flower_url          = :flower_url,
+        pre_rolls_url       = :pre_rolls_url,
+        vaporizers_url      = :vaporizers_url,
+        concentrates_url    = :concentrates_url,
+        edibles_url         = :edibles_url,
+        tinctures_url       = :tinctures_url,
+        cbd_url             = :cbd_url,
+        topicals_url        = :topicals_url,
+        address             = :address
     WHERE id = :id  
-    RETURNING id, company_id, address;
+    RETURNING id, company_id, address, created_at, updated_at;
 """
 
 DELETE_DISPENSARY_BY_ID_QUERY = """
@@ -51,9 +52,10 @@ class DispensariesRepository(BaseRepository):
         return DispensaryInDB(**dispensary)
 
     async def get_dispensary_by_id(self, *, id: int) -> DispensaryInDB:
-        dispensary = await self.db.fetch_one(query=GET_DISPENSARY_BY_COMPANY_ID_QUERY, values={"id": id})
+        dispensary = await self.db.fetch_one(query=GET_DISPENSARY_BY_ID_QUERY, values={"id": id})
         if not dispensary:
             return None
+        return DispensaryInDB(**dispensary)
 
     async def get_all_dispensaries(self) -> List[DispensaryInDB]:
         dispensary_records = await self.db.fetch_all(
@@ -61,27 +63,17 @@ class DispensariesRepository(BaseRepository):
         )
         return [DispensaryInDB(**l) for l in dispensary_records]
 
-    async def update_dispensary(
-        self, *, id: int, dispensary_update: DispensaryUpdate,
-    ) -> DispensaryInDB:
+    async def update_dispensary(self, *, id: int, dispensary_update: DispensaryUpdate) -> DispensaryInDB:
         dispensary = await self.get_dispensary_by_id(id=id)
-        if not dispensary:
-            return None
-        dispensary_update_params = dispensary.copy(
-            update=dispensary_update.dict(exclude_unset=True),
+        update_params = dispensary.copy(update=dispensary_update.dict(exclude_unset=True))
+
+        updated_dispensary = await self.db.fetch_one(
+            query=UPDATE_DISPENSARY_BY_ID_QUERY,
+            values=update_params.dict(exclude={"company_id", "created_at", "updated_at"}),
         )
-        try:
-            update_dispensary = await self.db.fetch_one(
-                query=UPDATE_DISPENSARY_BY_ID_QUERY, 
-                values=dispensary_update_params.dict(),
-            )
-            return DispensaryInDB(**updated_dispensary)
-        except Exception as e:
-            print(e)
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, 
-                detail="Invalid update params.",
-            )
+        print(updated_dispensary)
+        #return DispensaryInDB(**updated_dispensary)
+        #return [DispensaryInDB(**updated_dispensary) for update_dispensary in updated_dispensary]
 
     async def delete_dispensary_by_id(self, *, id: int) -> int:
         dispensary = await self.get_dispensary_by_id(id=id)

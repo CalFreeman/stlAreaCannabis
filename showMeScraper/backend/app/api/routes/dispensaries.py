@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Path
-from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 
 from app.models.dispensaries import DispensaryCreate, DispensaryUpdate, DispensaryPublic
 from app.db.repositories.dispensaries import DispensariesRepository
@@ -26,9 +26,9 @@ async def create_new_dispensary(
 
 @router.get("/{id}/", response_model=DispensaryPublic, name="dispensary:get-dispensary-by-id")
 async def get_dispensary_by_id(
-  id: int, dispensaries_repo: DispensariesRepository = Depends(get_repository(DispensariesRepository))
+  id: int, dispensary_repo: DispensariesRepository = Depends(get_repository(DispensariesRepository))
 ) -> DispensaryPublic:
-    dispensary = await dispensaries_repo.get_dispensary_by_id(id=id)
+    dispensary = await dispensary_repo.get_dispensary_by_id(id=id)
     if not dispensary:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No dispensary found with that id.")
     return dispensary
@@ -46,9 +46,10 @@ async def update_dispensary_by_id(
     updated_dispensary = await dispensary_repo.update_dispensary(
         id=id, dispensary_update=dispensary_update,
     )
+    print(updated_dispensary)
     if not updated_dispensary:
         raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND, 
+            status_code=HTTP_422_UNPROCESSABLE_ENTITY, 
             detail="No dispensary found with that id.",
         )
     return updated_dispensary
@@ -58,7 +59,7 @@ async def delete_dispensary_by_id(
     id: int = Path(..., ge=1, title="The ID of the dispensary to delete."),
     dispensary_repo: DispensariesRepository = Depends(get_repository(DispensariesRepository)),
 ) -> int:
-    deleted_id = await dispensaries_repo.delete_dispensary_by_id(id=id)
+    deleted_id = await dispensary_repo.delete_dispensary_by_id(id=id)
     if not deleted_id:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND, 
