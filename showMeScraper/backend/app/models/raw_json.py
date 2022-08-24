@@ -7,7 +7,7 @@ class RawJsonBase(CoreModel):
     """
     Leaving off company_id_ and _ from base model
     """
-    json_doc: Optional[Json]
+    json_doc: Json
 
 class RawJsonUpdate(RawJsonBase):
     pass
