@@ -41,7 +41,7 @@ async def update_raw_json_by_id(
     raw_json_update: RawJsonUpdate = Body(..., embed=True),
     raw_json_repo: RawJsonRepository = Depends(get_repository(RawJsonRepository)),
 ) -> RawJsonPublic:
-    updated_raw_json = await raw_json_repo.updated_raw_json(
+    updated_raw_json = await raw_json_repo.update_raw_json(
         id=id, raw_json_update=raw_json_update,
     )
     if not updated_raw_json:
