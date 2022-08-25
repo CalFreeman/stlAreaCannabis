@@ -38,12 +38,9 @@ class RawJsonRepository(BaseRepository):
     """"
     All database actions associated with the raw_json resource
     """
-    #async def create_raw_json(self, *, new_raw_json: RawJsonCreate) -> List[RawJsonInDB]:
     async def create_raw_json(self, *, new_raw_json: RawJsonCreate) -> RawJsonInDB:
-        query_values = new_raw_json.json()
+        query_values = new_raw_json.dict()
         raw_json = await self.db.fetch_one(query=CREATE_RAW_JSON_QUERY, values=query_values)
-
-        #return [RawJsonInDB(**l) for l in raw_json]
         return RawJsonInDB(**raw_json)
 
     async def get_raw_json_by_id(self, *, id: int) -> RawJsonInDB:

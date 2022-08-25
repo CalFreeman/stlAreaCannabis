@@ -1,7 +1,7 @@
 from typing import List, Dict
 from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
-
+from fastapi.encoders import jsonable_encoder
 from app.models.raw_json import RawJsonCreate, RawJsonPublic, RawJsonUpdate
 from app.db.repositories.raw_json import RawJsonRepository  
 from app.api.dependencies.database import get_repository  
@@ -14,14 +14,12 @@ async def get_all_raw_json(
 ) -> List[RawJsonPublic]:
     return await raw_json_repo.get_all_raw_json() 
 
-#@router.post("/", response_model=List[RawJsonPublic], name="raw_json:create-raw-json", status_code=HTTP_201_CREATED)
 @router.post("/", response_model=RawJsonPublic, name="raw_json:create-raw-json", status_code=HTTP_201_CREATED)
 async def create_new_raw_json(
     new_raw_json: RawJsonCreate = Body(..., embed=True),
     raw_json_repo: RawJsonRepository = Depends(get_repository(RawJsonRepository)),
 ) -> RawJsonPublic:
-#) -> List[RawJsonPublic]:
-    created_raw_json = await raw_json_repo(new_raw_json=new_raw_json)
+    created_raw_json = await raw_json_repo.create_raw_json(new_raw_json=new_raw_json)
     return created_raw_json
 
 @router.get("/{id}/", response_model=RawJsonPublic, name="raw_json:get-raw-json-by-id")

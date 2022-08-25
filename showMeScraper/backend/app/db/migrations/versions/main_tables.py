@@ -91,7 +91,7 @@ def create_raw_json_table() -> None:
     op.create_table(
         "raw_json",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("json_doc", sa.JSON(), nullable=True),
+        sa.Column("json_doc", sa.Text, nullable=True),
         *timestamps(),
     )
     op.execute(
