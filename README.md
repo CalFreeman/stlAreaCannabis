@@ -34,11 +34,12 @@ docker
 ERROR RESOLUTION:
 https://stackoverflow.com/questions/12911717/error-command-gcc-failed-with-exit-status-when-installing-psycopg2
 
-TODO:
-    python modules need pyscripts pull db info from root dir
-    dynamic webscraper
-    storing urls for webscraping
-    pulling companyId when Post scrapped data
-    when scraping iterate through pages
-    work on products other than flower
-    
+## TODO:
+   ### docker-compose app service needs volumes
+   ### remove hardcoded ID in tests/test_companies.py in func test_get_companies_by_id()
+   ### write dispensary tests
+   ### test dispensary put, need columns unqness change
+
+## Migrations
+  ### alembic downgrade base
+  ### alembic upgrade head
