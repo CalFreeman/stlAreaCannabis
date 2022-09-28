@@ -20,23 +20,24 @@ def fetch_json(json_url):
     return html
 
 # fetch url to scrap
-def fetchUrlpsqlQuery(columnName, table, dispensary_id):
-    psql_select_Query = "select " + columnName + " from " + table + " where id = '" + dispensary_id + "';"
+def fetchUrlpsqlQuery(table, columnName, dispensary_id):
+    psql_select_Query = "SELECT " + table + " FROM " + columnName + " where id = '" + dispensary_id + "';"
+    print(psql_select_Query)
     return psql_select_Query
 
 # Returns query and tuple of data to publish
 def publishUrlJson(json_blob):
     uuid = random.randint(1000, 10000)
-    psql_publish_Query = """ INSERT INTO json_raw (id, info) VALUES (%s, %s) """
+    psql_publish_Query = """ INSERT INTO raw_json (id, json_doc) VALUES (%s, %s) """
     record_to_insert = (uuid, json_blob)
     print(uuid)
     return psql_publish_Query, record_to_insert
 
 def connect():
     #TODO add dynamic params here
-    columnName = "flower_url"
     table = "dispensaries"
-    dispensary_id = "947808ec-f091-4507-bdc5-a1fb065f689d" 
+    columnName = "flower_url"
+    dispensary_id = "23" 
     try:
         # read connection parameters
         params = config()
@@ -53,6 +54,8 @@ def connect():
 
         json_url = cur.fetchone()
         json_blob = fetch_json(json_url[0])
+
+        #publish data
         publisher_data = publishUrlJson(json_blob)
         
         # Decode UTF-8 bytes to Unicode, and convert single quotes 

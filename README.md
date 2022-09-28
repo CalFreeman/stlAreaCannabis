@@ -33,12 +33,16 @@ docker
 
 ERROR RESOLUTION:
 https://stackoverflow.com/questions/12911717/error-command-gcc-failed-with-exit-status-when-installing-psycopg2
+if docker wont spin up postgresql check if docker_postgres is running and stop it
 
 ## TODO:
    ### docker-compose app service needs volumes
    ### remove hardcoded ID in tests/test_companies.py in func test_get_companies_by_id()
    ### write dispensary tests
    ### test dispensary put, need columns unqness change
+   ### swagger post json example:     "json_doc": "{'name':'hthrthrth', 'age':30, \"car\":null}"
+   ### need to replace double quotes with singles and than post dutchie product json to db
+   ### Unable to post a new dispensary if another dispensary uses any equal column values, ie: dis1 and dis2 cannot both have the same flower_url == "string"
 
 ## Migrations
   ### alembic downgrade base
