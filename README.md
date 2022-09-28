@@ -43,6 +43,7 @@ if docker wont spin up postgresql check if docker_postgres is running and stop i
    ### swagger post json example:     "json_doc": "{'name':'hthrthrth', 'age':30, \"car\":null}"
    ### need to replace double quotes with singles and than post dutchie product json to db
    ### Unable to post a new dispensary if another dispensary uses any equal column values, ie: dis1 and dis2 cannot both have the same flower_url == "string"
+   ### blob_publisher.py works with fastapi, however it uses its own config.
 
 ## Migrations
   ### alembic downgrade base
