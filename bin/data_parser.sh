@@ -19,7 +19,7 @@ done
 #dispensary_id passed when running script
 echo "depo_id: $DISP_ID"
 echo "FURL: $FETCH_URL"
-scrap_url=( $(psql -d testdb -U myuser -t -h 0.0.0.0 -p 5432 -c "SELECT $FETCH_URL FROM dispensaries WHERE id = '$DISP_ID';"))
+scrap_url=( $(psql -d postgres -U myuser -t -h 0.0.0.0 -p 5432 -c "SELECT $FETCH_URL FROM dispensaries WHERE id = '$DISP_ID';"))
 echo "SCRAP_URL: $scrap_url"
 curl $scrap_url >results.json
 cat results.json |jq .data[].products[].Status >status
@@ -31,6 +31,7 @@ cat results.json |jq .data[].products[].POSMetaData.children[].quantityAvailable
 cat results.json |jq .data[].products[].type >types
 cat results.json |jq .data[].products[].POSMetaData.canonicalBrandName >brands
 cat results.json |jq .data[].products[].POSMetaData.children[].option >grams
+cat results.json |jq .data[].products[].THCContent.range >thcrange
 
 echo "[" >final.json
 
@@ -45,11 +46,12 @@ do
         status="\"status\":"$(head -q -n$i status |tail -n1)
         strain="\"strain\":"$(head -q -n$i strains |tail -n1)
         type="\"type\":"$(head -q -n$i types |tail -n1)
+        range="\"thc\":"$(head -q -n$i thcrange |tail -n2)
 
-        line="{${brand},${gram},${image},${name},${price},${quantity},${status},${strain},${type}},"
+        line="{${brand},${gram},${image},${name},${price},${quantity},${status},${strain},${type},${range}},"
         echo $line >>final.json
 done
 
 echo "]" >>final.json
 
-rm brands grams images names prices quantity status strains types
+rm brands grams images names prices quantity status strains types thcrange

@@ -6,6 +6,7 @@ from app.models.raw_json import RawJsonCreate, RawJsonPublic, RawJsonUpdate
 from app.db.repositories.raw_json import RawJsonRepository  
 from app.api.dependencies.database import get_repository
 import json
+from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()
 
@@ -21,7 +22,8 @@ async def create_new_raw_json(
     raw_json_repo: RawJsonRepository = Depends(get_repository(RawJsonRepository)),
 ) -> RawJsonPublic:
     created_raw_json = await raw_json_repo.create_raw_json(new_raw_json=new_raw_json)
-    return created_raw_json
+    json_compatible_item_data = created_raw_json.json()
+    return json_compatible_item_data
 
 @router.get("/{id}/", response_model=RawJsonPublic, name="raw_json:get-raw-json-by-id")
 async def get_raw_json_by_id(

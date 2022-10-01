@@ -45,6 +45,18 @@ if docker wont spin up postgresql check if docker_postgres is running and stop i
    ### Unable to post a new dispensary if another dispensary uses any equal column values, ie: dis1 and dis2 cannot both have the same flower_url == "string"
    ### blob_publisher.py works with fastapi, however it uses its own config.
 
+## POSSIBLEGOALS:
+   ### fetch data from api and dump json in dwh.
+   ### parse it.
+   ### append to history with timestamp (since our data is mutable)
+   ### fetch the latest version of every transaction
+   ### enrich, transform amd report.
+   ### try to stream data rather than batch
+   ### data quality check
+   ### schema changes
+   ### no transformation in python.
+   ### scd 2 for history.
+
 ## Migrations
   ### alembic downgrade base
   ### alembic upgrade head
